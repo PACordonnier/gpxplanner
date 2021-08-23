@@ -20,26 +20,25 @@ const server = Hapi.server({
 })
 
 server.route({
-  method: 'PUT',
+  method: 'POST',
   path: '/upload',
   config: {
     handler: (request, h) => {
+      const payload = request.payload;
+      let writeStream = fs.createWriteStream("db/" + payload.name + ".gpx");
 
-        const payload = request.payload;
-        let writeStream = fs.createWriteStream("db/" + payload.name + ".gpx");
+      payload.upload.pipe(writeStream);
+      const gpxplanner = nano.use('gpxplanner');
+      // nano.db.create('gpxplanner')
+      // const gpxplanner = nano.use('gpxplanner')
+      // const response = await gpxplanner.insert({ path: "db/" + payload.name + ".gpx", name: payload.name, date: payload.date })
+      return new Promise(resolve => {
+        writeStream.on('finish', () => writeStream.close(() => (resolve())))
+      }).then((result) => gpxplanner.insert({ path: payload.name + ".gpx", name: payload.name, date: payload.date }, "1"))
+      .then((result) => new Promise((resolve) => resolve({ coucou: "coucou"})))
+      .catch((err) => console.log(err))
 
-        payload.upload.pipe(writeStream);
-        const gpxplanner = nano.use('gpxplanner');
-        // nano.db.create('gpxplanner')
-        // const gpxplanner = nano.use('gpxplanner')
-        // const response = await gpxplanner.insert({ path: "db/" + payload.name + ".gpx", name: payload.name, date: payload.date })
-        return new Promise(resolve => {
-          writeStream.on('finish', () => writeStream.close(() => (resolve())))
-        }).then((result) => gpxplanner.insert({ path: payload.name + ".gpx", name: payload.name, date: payload.date }, "1"))
-        .then((result) => new Promise((resolve) => resolve({ coucou: "coucou"})))
-        .catch((err) => console.log(err))
-
-      },
+    },
 
     payload: {
       maxBytes: 209715200,
