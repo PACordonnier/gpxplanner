@@ -9,7 +9,6 @@ const Path = require('path');
 const nano = require('nano')('http://admin:password@localhost:5984');
 
 
-
 const server = Hapi.server({
   port: 3000,
   host: 'localhost',
@@ -19,7 +18,6 @@ const server = Hapi.server({
     }
   }
 })
-
 
 server.route({
   method: 'POST',
@@ -72,13 +70,12 @@ server.route({
 })
 
 exports.init = async () => {
-  await server.register(require('@hapi/inert'));
   await server.initialize();
   return server;
 }
 
 exports.start = async () => {
-
+  await server.register(require('@hapi/inert'));
   await server.start();
   console.log(`Server running at: ${server.info.uri}`);
   return server;
