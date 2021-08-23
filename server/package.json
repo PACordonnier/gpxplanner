@@ -1,4 +1,4 @@
-{
+ {
   "name": "gpxplanner-server",
   "version": "1.0.0",
   "main": "index.js",
@@ -14,6 +14,6 @@
     "@hapi/lab": "^24.3.2"
   },
   "scripts": {
-    "test": "lab -v **/*.test.js"
+    "test": "lab --ignore '$jsDebugIsRegistered' -v **/*.test.js"
   }
 }

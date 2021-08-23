@@ -20,7 +20,7 @@ const server = Hapi.server({
 })
 
 server.route({
-  method: 'POST',
+  method: 'PUT',
   path: '/upload',
   config: {
     handler: (request, h) => {
