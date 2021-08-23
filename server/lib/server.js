@@ -69,6 +69,16 @@ server.route({
   } 
 })
 
+server.route({
+  method: 'GET',
+  path: '/',
+  config: {
+    handler: (request, h) => {
+      return "Hello World !"
+    }
+  } 
+})
+
 exports.init = async () => {
   await server.initialize();
   return server;
