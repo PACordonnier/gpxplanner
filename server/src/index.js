@@ -2,16 +2,25 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
+const { rejects } = require('assert');
 const fs = require('fs');
-const Joi = require('joi')
+const Joi = require('joi');
+const Path = require('path');
 const nano = require('nano')('http://admin:password@localhost:5984');
 
 const init = async () => {
 
   const server = Hapi.server({
     port: 3000,
-    host: 'localhost'
-  });
+    host: 'localhost',
+    routes: {
+      files: {
+          relativeTo: Path.join(__dirname, '../db')
+      }
+    }
+  })
+
+  await server.register(require('@hapi/inert'));
 
   server.route({
     method: 'POST',
@@ -27,13 +36,12 @@ const init = async () => {
           // nano.db.create('gpxplanner')
           // const gpxplanner = nano.use('gpxplanner')
           // const response = await gpxplanner.insert({ path: "db/" + payload.name + ".gpx", name: payload.name, date: payload.date })
-          let promises = new Promise(
-            resolve => writeStream.on('finish', () => writeStream.close(() => resolve("Upload successful !")))
-          ).then(gpxplanner.insert({ path: "db/" + payload.name + ".gpx", name: payload.name, date: payload.date }))
+          return new Promise(resolve => {
+            writeStream.on('finish', () => writeStream.close(() => (resolve())))
+          }).then((result) => gpxplanner.insert({ path: payload.name + ".gpx", name: payload.name, date: payload.date }, "1"))
+          .then((result) => new Promise((resolve) => resolve({ coucou: "coucou"})))
+          .catch((err) => console.log(err))
 
-      
-
-          return promises
         },
 
       payload: {
@@ -51,8 +59,19 @@ const init = async () => {
         })
      }
 
-    }
-  });
+    },
+  })
+  server.route({
+    method: 'GET',
+    path: '/static',
+    config: {
+      handler: (request, h) => {
+        return h.file('coucou.gpx');
+      }
+    } 
+  })
+  
+
 
   await server.start();
   console.log('Server running on %s', server.info.uri);
