@@ -8,5 +8,12 @@
     "@hapi/inert": "^6.0.3",
     "joi": "^17.4.2",
     "nano": "^9.0.3"
+  },
+  "devDependencies": {
+    "@hapi/code": "^8.0.3",
+    "@hapi/lab": "^24.3.2"
+  },
+  "scripts": {
+    "test": "lab -v **/*.test.js"
   }
 }
