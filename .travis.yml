@@ -11,3 +11,9 @@ node_js:
   - 16
 services:
   - couchdb
+addons:
+  apt:
+    sources:
+      - https://apache.bintray.com/couchdb-deb
+    packages:
+    - couchdb
