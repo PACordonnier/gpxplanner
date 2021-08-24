@@ -1,5 +1,5 @@
 dist: 
-  - bionic
+  - xenial
 env:
   - NODE_ENV=travis_ci
 language: node_js
@@ -14,6 +14,6 @@ services:
 addons:
   apt:
     sources:
-      - https://apache.bintray.com/couchdb-deb
+      - ppa:couchdb/stable
     packages:
     - couchdb
