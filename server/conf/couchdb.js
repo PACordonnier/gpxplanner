@@ -35,7 +35,7 @@ const test = {
 const config = {
  dev,
  test,
- travis_ci
+ local_test
 };
 
 module.exports = config[env];
