@@ -7,7 +7,7 @@ const dev = {
    port: 5984,
    username: "admin",
    password: "password",
-   connection_string: `http://${config.db.username}:${config.db.password}@${config.db.host}:${config.db.port}` 
+   connection_string: `http://admin:password@$localhost:5984` 
  }
 };
 
@@ -17,7 +17,7 @@ const test = {
    port: 5984,
    username: "admin",
    password: "password",
-   connection_string: `http://${config.db.username}:${config.db.password}@${config.db.host}:${config.db.port}` 
+   connection_string: `http://admin:password@$localhost:5984` 
  }
 };
 
@@ -25,9 +25,9 @@ const travis_ci = {
   db: {
     host: 'localhost',
     port: 5984,
-    username: "admin",
-    password: "travis",
-    connection_string: `http://${config.db.host}:${config.db.port}` 
+    username: "",
+    password: "",
+    connection_string: `http://localhost:5984` 
   }
  
 }
