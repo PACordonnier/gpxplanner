@@ -6,8 +6,8 @@ const { rejects } = require('assert');
 const fs = require('fs');
 const Joi = require('joi');
 const Path = require('path');
-const nano = require('nano')('http://admin:password@localhost:5984');
-
+const config = require('../conf/couchdb');
+const nano = require('nano')(`http://${config.db.username}:${config.db.password}@${config.db.host}:${config.db.port}`);
 
 const server = Hapi.server({
   port: 3000,

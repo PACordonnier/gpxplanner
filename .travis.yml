@@ -1,5 +1,13 @@
+dist: 
+  - bionic
+env:
+  - NODE_ENV=travis_ci
 language: node_js
 before_install:
   - cd server
+before_script:
+  - curl -X PUT localhost:5984/gpxplanner
 node_js:
-  - 14
+  - 16
+services:
+  - couchdb
