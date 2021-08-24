@@ -7,7 +7,6 @@ const fs = require('fs');
 const Joi = require('joi');
 const Path = require('path');
 const { db } = require('../conf/couchdb');
-console.log(db);
 const nano = require('nano')(db.connection_string);
 
 
