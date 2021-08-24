@@ -11,7 +11,7 @@ const dev = {
  }
 };
 
-const test = {
+const local_test = {
  db: {
    host: 'localhost',
    port: 5984,
@@ -21,7 +21,7 @@ const test = {
  }
 };
 
-const travis_ci = {
+const test = {
   db: {
     host: 'localhost',
     port: 5984,
