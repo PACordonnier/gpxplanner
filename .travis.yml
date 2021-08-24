@@ -1,7 +1,5 @@
 dist: 
   - xenial
-env:
-  - NODE_ENV=travis_ci
 language: node_js
 before_install:
   - cd server
