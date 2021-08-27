@@ -7,7 +7,7 @@ const dev = {
    port: 5984,
    username: "admin",
    password: "password",
-   connection_string: `http://admin:password@$localhost:5984` 
+   connection_string: `http://admin:password@localhost:5984` 
  }
 };
 
@@ -17,7 +17,7 @@ const local_test = {
    port: 5984,
    username: "admin",
    password: "password",
-   connection_string: `http://admin:password@$localhost:5984` 
+   connection_string: `http://admin:password@localhost:5984` 
  }
 };
 
