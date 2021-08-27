@@ -8,7 +8,8 @@ const Joi = require('joi');
 const Path = require('path');
 const { db } = require('../conf/couchdb');
 const nano = require('nano')(db.connection_string);
-
+const gpxplanner = nano.use('gpxplanner');
+const Boom = require('@hapi/boom');
 
 const server = Hapi.server({
   port: 3000,
@@ -35,8 +36,7 @@ server.route({
       // const response = await gpxplanner.insert({ path: "db/" + payload.name + ".gpx", name: payload.name, date: payload.date })
       return new Promise(resolve => {
         writeStream.on('finish', () => writeStream.close(() => (resolve())))
-      }).then((result) => gpxplanner.insert({ path: payload.name + ".gpx", name: payload.name, date: payload.date }, "1"))
-      .then((result) => new Promise((resolve) => resolve({ coucou: "coucou"})))
+      }).then((result) => gpxplanner.insert({ path: payload.name + ".gpx", name: payload.name, date: payload.date, owner: 1}))
       .catch((err) => console.log(err))
 
     },
@@ -61,13 +61,24 @@ server.route({
 
 server.route({
   method: 'GET',
-  path: '/static',
+  path: '/static/gpx/{id}',
   config: {
-    handler: (request, h) => {
-      return h.file('coucou.gpx');
-    }
-  } 
-})
+    handler: async (request, h) => {
+      try {
+        await gpxplanner.get(request.params.id);
+      }
+      catch (error) {
+        throw Boom.notFound('Id not found in database');
+      }
+      return h.file((await gpxplanner.get(request.params.id)).path);    
+    },
+    // validate: {
+    //   params: Joi.object({
+    //     id: Joi.string().required()
+    //   })
+    // } 
+  }
+});
 
 server.route({
   method: 'GET',
@@ -79,13 +90,14 @@ server.route({
   } 
 })
 
+
 exports.init = async () => {
   await server.initialize();
+  await server.register(require('@hapi/inert'));
   return server;
 }
 
 exports.start = async () => {
-  await server.register(require('@hapi/inert'));
   await server.start();
   console.log(`Server running at: ${server.info.uri}`);
   return server;
