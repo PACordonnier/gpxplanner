@@ -101,6 +101,14 @@ exports.start = async () => {
   return server;
 };
 
+exports.initStart = async () => {
+  await server.initialize();
+  await server.register(require('@hapi/inert'));
+  await server.start();
+  console.log(`Server running at: ${server.info.uri}`);
+  return server;
+}
+
 process.on('unhandledRejection', (err) => {
     console.log(err);
     process.exit(1);
