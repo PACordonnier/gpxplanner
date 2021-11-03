@@ -28,15 +28,13 @@ server.route({
     handler: (request, h) => {
       const payload = request.payload;
       let writeStream = fs.createWriteStream("db/" + payload.name + ".gpx");
-
       payload.upload.pipe(writeStream);
-      const gpxplanner = nano.use('gpxplanner');
       // nano.db.create('gpxplanner')
       // const gpxplanner = nano.use('gpxplanner')
       // const response = await gpxplanner.insert({ path: "db/" + payload.name + ".gpx", name: payload.name, date: payload.date })
       return new Promise(resolve => {
         writeStream.on('finish', () => writeStream.close(() => (resolve())))
-      }).then((result) => gpxplanner.insert({ path: payload.name + ".gpx", name: payload.name, date: payload.date, owner: 1}))
+      }).then((result) => gpxplanner.insert({ path: payload.name + ".gpx", name: payload.name, date: payload.date.toISOString(), owner: 1}))
       .catch((err) => console.log(err))
 
     },
