@@ -52,7 +52,7 @@ server.route({
       payload: Joi.object({
           name: Joi.string().alphanum().required(),
           upload: Joi.required(),
-          date: Joi.date().required()
+          date: Joi.date().iso().required()
       })
     }
 
