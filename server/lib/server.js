@@ -34,7 +34,7 @@ server.route({
       // const response = await gpxplanner.insert({ path: "db/" + payload.name + ".gpx", name: payload.name, date: payload.date })
       return new Promise(resolve => {
         writeStream.on('finish', () => writeStream.close(() => (resolve())))
-      }).then((result) => gpxplanner.insert({ path: payload.name + ".gpx", name: payload.name, date: payload.date.toISOString(), owner: 1}))
+      }).then((result) => gpxplanner.insert({ path: payload.name + ".gpx", name: payload.name, date: payload.date.getTime()/1000, owner: 1}))
       .catch((err) => console.log(err))
 
     },
