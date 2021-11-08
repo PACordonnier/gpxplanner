@@ -5,6 +5,7 @@ before_install:
   - cd server
 before_script:
   - docker-compose up -d
+  - sleep 5
   - curl -X PUT -u admin:password localhost:5984/gpxplanner
 node_js:
   - 16
