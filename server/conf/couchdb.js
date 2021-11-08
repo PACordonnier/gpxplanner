@@ -25,11 +25,10 @@ const test = {
   db: {
     host: 'localhost',
     port: 5984,
-    username: "",
-    password: "",
-    connection_string: `http://localhost:5984` 
-  }
- 
+    username: "admin",
+    password: "password",
+    connection_string: `http://admin:password@localhost:5984` 
+  }  
 }
 
 const config = {
