@@ -15,13 +15,13 @@ describe('POST /upload', () => {
     let id;
 
     before(async () => {
-      mockCouch.listen(5984, function() {});
-      mockCouch.addDB('gpxplanner', []);
-      console.log('CouchDB started !');
+      // mockCouch.listen(5984, function() {});
+      // mockCouch.addDB('gpxplanner', []);
+      // console.log('CouchDB started !');
     });
 
     after(async () => {
-      mockCouch.close()
+      // mockCouch.close()
     }),
 
     beforeEach(async () => {
