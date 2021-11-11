@@ -3,7 +3,7 @@
 
 const Hapi = require('@hapi/hapi');
 const { rejects } = require('assert');
-const fs = require('fs');
+const fs = require('fs').promises;
 const Joi = require('joi');
 const Path = require('path');
 const { db } = require('../conf/couchdb');
@@ -16,7 +16,7 @@ const server = Hapi.server({
   host: 'localhost',
   routes: {
     files: {
-        relativeTo: Path.join(__dirname, '../db')
+      relativeTo: Path.join(__dirname, '../db')
     }
   }
 })
@@ -47,8 +47,8 @@ server.route({
 
     validate: {
       query: Joi.object({
-          date: Joi.date().iso(),
-          name: Joi.string()
+        date: Joi.date().iso(),
+        name: Joi.string()
       })
     }
   }
@@ -56,39 +56,42 @@ server.route({
 
 server.route({
   method: 'POST',
-  path: '/upload',
+  path: '/route',
   config: {
     handler: (request, h) => {
-      const payload = request.payload;
-      let writeStream = fs.createWriteStream("db/" + payload.name + ".gpx");
-      payload.upload.pipe(writeStream);
-      // nano.db.create('gpxplanner')
-      // const gpxplanner = nano.use('gpxplanner')
-      // const response = await gpxplanner.insert({ path: "db/" + payload.name + ".gpx", name: payload.name, date: payload.date })
-      return new Promise(resolve => {
-        writeStream.on('finish', () => writeStream.close(() => (resolve())))
-      }).then((result) => gpxplanner.insert({ path: payload.name + ".gpx", name: payload.name, date: payload.date.getTime()/1000, owner: 1}))
-      .catch((err) => console.log(err))
-
-    },
-
-    payload: {
-      maxBytes: 209715200,
-      output: 'stream',
-      parse: true,
-      multipart: true
+      // TODO Check if it's correct GPX
+      return fs.writeFile("db/" + request.payload.name + ".gpx", Buffer.from(request.payload.route, 'base64'))
+      .then(() => {
+        return gpxplanner.insert({ path: request.payload.name + ".gpx", name: request.payload.name, owner: 1});
+      });
     },
 
     validate: {
       payload: Joi.object({
-          name: Joi.string().alphanum().required(),
-          upload: Joi.required(),
-          date: Joi.date().iso().required()
+        name: Joi.string().required(),
+        route: Joi.string().base64().required()
       })
     }
-
   },
 })
+
+server.route({
+  method: 'GET',
+  path: '/route/{id}',
+  config: {
+    handler: (request, h) => {
+      return gpxplanner.get(request.params.id)
+      .catch((error) => {
+        return Boom.notFound('Id not found in database');
+      })
+    },
+    validate: {
+      params: Joi.object({
+        id: Joi.string().required()
+      })
+    } 
+  }
+});
 
 server.route({
   method: 'GET',
