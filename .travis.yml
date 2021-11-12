@@ -6,7 +6,8 @@ before_install:
 before_script:
   - docker-compose up -d
   - sleep 5
-  - curl -X PUT -u admin:password localhost:5984/gpxplanner
+  - curl -X PUT -u admin:password localhost:5984/routes
+  - curl -X PUT -u admin:password localhost:5984/rides
 node_js:
   - 16
 services:
