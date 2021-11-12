@@ -56,7 +56,7 @@ server.route({
 
 server.route({
   method: 'POST',
-  path: '/route',
+  path: '/routes',
   config: {
     handler: (request, h) => {
       // TODO Check if it's correct GPX
@@ -77,7 +77,7 @@ server.route({
 
 server.route({
   method: 'GET',
-  path: '/route/{id}',
+  path: '/routes/{id}',
   config: {
     handler: (request, h) => {
       return routes_db.get(request.params.id)
