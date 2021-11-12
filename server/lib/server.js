@@ -95,6 +95,36 @@ server.route({
 
 server.route({
   method: 'GET',
+  path: '/routes',
+  config: {
+    handler: async (request, h) => {
+      var selector = {}
+      Object.keys(request.query).forEach((key) => {
+        selector[key] = { "$eq" : request.query[key] instanceof Date ? request.query[key].getTime()/1000 : request.query[key]};
+      });
+      var q = {
+        "selector": selector
+      };
+      try {
+        const response = await routes_db.find(q);
+        return h.response(response.docs);
+      }
+      catch (error) {
+        console.log(error);
+        throw error
+      }
+    },
+
+    validate: {
+      query: Joi.object({
+        name: Joi.string()
+      })
+    }
+  }
+});
+
+server.route({
+  method: 'GET',
   path: '/static/gpx/{id}',
   config: {
     handler: async (request, h) => {
