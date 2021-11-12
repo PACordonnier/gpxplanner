@@ -8,7 +8,8 @@ const Joi = require('joi');
 const Path = require('path');
 const { db } = require('../conf/couchdb');
 const nano = require('nano')(db.connection_string);
-const gpxplanner = nano.use('gpxplanner');
+const routes_db = nano.use('routes');
+const rides_db = nano.use('rides');
 const Boom = require('@hapi/boom');
 
 const server = Hapi.server({
@@ -33,9 +34,8 @@ server.route({
       var q = {
         "selector": selector
       };
-      console.log(q);
       try {
-        const response = await gpxplanner.find(q);
+        const response = await routes_db.find(q);
         return h.response(response.docs);
       }
       catch (error) {
@@ -62,7 +62,7 @@ server.route({
       // TODO Check if it's correct GPX
       return fs.writeFile("db/" + request.payload.name + ".gpx", Buffer.from(request.payload.route, 'base64'))
       .then(() => {
-        return gpxplanner.insert({ path: request.payload.name + ".gpx", name: request.payload.name, owner: 1});
+        return routes_db.insert({ path: request.payload.name + ".gpx", name: request.payload.name, owner: 1});
       });
     },
 
@@ -80,7 +80,7 @@ server.route({
   path: '/route/{id}',
   config: {
     handler: (request, h) => {
-      return gpxplanner.get(request.params.id)
+      return routes_db.get(request.params.id)
       .catch((error) => {
         return Boom.notFound('Id not found in database');
       })
@@ -99,12 +99,12 @@ server.route({
   config: {
     handler: async (request, h) => {
       try {
-        await gpxplanner.get(request.params.id);
+        await routes_db.get(request.params.id);
       }
       catch (error) {
         throw Boom.notFound('Id not found in database');
       }
-      return h.file((await gpxplanner.get(request.params.id)).path);
+      return h.file((await routes_db.get(request.params.id)).path);
     },
     // validate: {
     //   params: Joi.object({
