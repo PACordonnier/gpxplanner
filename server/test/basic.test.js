@@ -6,21 +6,21 @@ const { after, before, describe, it } = exports.lab = Lab.script();
 const { init } = require('../lib/server');
 
 describe('GET /', () => {
-    let server;
+  let server;
 
-    before(async () => {
-        server = await init();
-    });
+  before(async () => {
+      server = await init();
+  });
 
-    after(async () => {
-        await server.stop();
-    });
+  after(async () => {
+      await server.stop();
+  });
 
-    it('responds with 200', async () => {
-        const res = await server.inject({
-            method: 'get',
-            url: '/'
-        });
-        expect(res.statusCode).to.equal(200);
-    });
+  it('responds with 200', async () => {
+      const res = await server.inject({
+          method: 'get',
+          url: '/'
+      });
+      expect(res.statusCode).to.equal(200);
+  });
 });
