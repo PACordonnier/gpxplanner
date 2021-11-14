@@ -50,5 +50,35 @@ module.exports.routes = [
       })
     }
   }
+},
+{
+  method: 'GET',
+  path: '/rides',
+  config: {
+    handler: async (request, h) => {
+      var selector = {}
+      Object.keys(request.query).forEach((key) => {
+        selector[key] = { "$eq" : request.query[key] instanceof Date ? request.query[key].getTime()/1000 : request.query[key]};
+      });
+      var q = {
+        "selector": selector
+      };
+      try {
+        const response = await rides_db.find(q);
+        return h.response(response.docs);
+      }
+      catch (error) {
+        console.log(error);
+        throw error
+      }
+    },
+
+    validate: {
+      query: Joi.object({
+        name: Joi.string(),
+        date: Joi.date().iso()
+      }),
+    }
+  }
 }
 ]
