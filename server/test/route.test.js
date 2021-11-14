@@ -39,19 +39,19 @@ describe('Use routes', () => {
       expect(res.statusCode).to.equal(404);
     });
 
-    it('responds with 200 when posting a route in multipart', async () => {
-        const form = new FormData();
-        form.append('route', fs.createReadStream(path.join(__dirname, '../res/tour.gpx')));
-        form.append('name', 'tour');
-        const res = await server.inject({
-            method: 'post',
-            url: '/routes',
-            headers: form.getHeaders(),
-            payload: await GetStream(form)
-        });
-        expect(res.statusCode).to.equal(200);
-        id = res.result.id
-    });
+    // it('responds with 200 when posting a route in multipart', async () => {
+    //     const form = new FormData();
+    //     form.append('route', fs.createReadStream(path.join(__dirname, '../res/tour.gpx')));
+    //     form.append('name', 'tour');
+    //     const res = await server.inject({
+    //         method: 'post',
+    //         url: '/routes',
+    //         headers: form.getHeaders(),
+    //         payload: await GetStream(form)
+    //     });
+    //     expect(res.statusCode).to.equal(200);
+    //     id = res.result.id
+    // });
 
     it('responds with 200 when posting a route in JSON', async () => {
       const res = await server.inject({
