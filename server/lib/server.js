@@ -7,6 +7,8 @@ const fs = require('fs').promises;
 const Joi = require('joi');
 const Path = require('path');
 const { db } = require('../conf/couchdb');
+const routes = require("./routes/routes");
+const static_route = require("./routes/static");
 const nano = require('nano')(db.connection_string);
 const routes_db = nano.use('routes');
 const rides_db = nano.use('rides');
@@ -22,95 +24,8 @@ const server = Hapi.server({
   }
 })
 
-server.route({
-  method: 'POST',
-  path: '/routes',
-  config: {
-    handler: (request, h) => {
-      // TODO Check if it's correct GPX
-      return fs.writeFile("db/" + request.payload.name + ".gpx", Buffer.from(request.payload.route, 'base64'))
-      .then(() => {
-        return routes_db.insert({ path: request.payload.name + ".gpx", name: request.payload.name, owner: 1});
-      });
-    },
-
-    validate: {
-      payload: Joi.object({
-        name: Joi.string().required(),
-        route: Joi.string().base64().required()
-      })
-    }
-  },
-})
-
-server.route({
-  method: 'GET',
-  path: '/routes/{id}',
-  config: {
-    handler: (request, h) => {
-      return routes_db.get(request.params.id)
-      .catch((error) => {
-        return Boom.notFound('Id not found in database');
-      })
-    },
-    validate: {
-      params: Joi.object({
-        id: Joi.string().required()
-      })
-    } 
-  }
-});
-
-server.route({
-  method: 'GET',
-  path: '/routes',
-  config: {
-    handler: async (request, h) => {
-      var selector = {}
-      Object.keys(request.query).forEach((key) => {
-        selector[key] = { "$eq" : request.query[key] instanceof Date ? request.query[key].getTime()/1000 : request.query[key]};
-      });
-      var q = {
-        "selector": selector
-      };
-      try {
-        const response = await routes_db.find(q);
-        return h.response(response.docs);
-      }
-      catch (error) {
-        console.log(error);
-        throw error
-      }
-    },
-
-    validate: {
-      query: Joi.object({
-        name: Joi.string()
-      })
-    }
-  }
-});
-
-server.route({
-  method: 'GET',
-  path: '/static/gpx/{id}',
-  config: {
-    handler: async (request, h) => {
-      try {
-        await routes_db.get(request.params.id);
-      }
-      catch (error) {
-        throw Boom.notFound('Id not found in database');
-      }
-      return h.file((await routes_db.get(request.params.id)).path);
-    },
-    // validate: {
-    //   params: Joi.object({
-    //     id: Joi.string().required()
-    //   })
-    // } 
-  }
-});
+server.route(routes.routes);
+server.route(static_route.routes);
 
 server.route({
   method: 'GET',
