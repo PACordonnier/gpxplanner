@@ -9,6 +9,7 @@ const Path = require('path');
 const { db } = require('../conf/couchdb');
 const routes = require("./routes/routes");
 const static_route = require("./routes/static");
+const rides = require("./routes/rides");
 const nano = require('nano')(db.connection_string);
 const routes_db = nano.use('routes');
 const rides_db = nano.use('rides');
@@ -26,6 +27,7 @@ const server = Hapi.server({
 
 server.route(routes.routes);
 server.route(static_route.routes);
+server.route(rides.routes);
 
 server.route({
   method: 'GET',
@@ -36,7 +38,6 @@ server.route({
     }
   } 
 })
-
 
 exports.init = async () => {
   await server.initialize();
