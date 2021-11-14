@@ -76,7 +76,7 @@ describe('Use routes', () => {
           method: 'get',
           url: '/routes?name=foobar',
       });
-      expect(res.statusCode).to.equal(200);
+      expect(res.statusCode).to.equal(200) && expect(res.result).empty();
     });
 
     it('returns something when filtering correct', async () => {
@@ -87,8 +87,8 @@ describe('Use routes', () => {
       });
       let res = await server.inject({
         method: 'get',
-        url: '/query?name=tour',
+        url: '/routes?name=tour',
       });
-      expect(res.result).not.empty();
+      expect(res.statusCode).to.equal(200) && expect(res.result).not.empty();
     })
 });
