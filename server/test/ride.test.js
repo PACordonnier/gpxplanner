@@ -34,9 +34,19 @@ describe('Use rides', () => {
     it('responds with 404 when no ride found', async () => {
       const res = await server.inject({
           method: 'get',
-          url: '/ride/1',
+          url: '/rides/1',
       });
       expect(res.statusCode).to.equal(404);
+    });
+
+    it('responds with 400 when route does not exist', async () => {
+      const res = await server.inject({
+        method: 'post',
+        url: '/rides',
+        payload: {name: "Ride du mercredi", date: "2021-11-11", route: `foobar`}
+      });
+      ride_id = res.result.id;
+      expect(res.statusCode).to.equal(400);
     });
 
     it('responds with 200 when posting a ride', async () => {
@@ -48,7 +58,7 @@ describe('Use rides', () => {
       route_id = res.result.id;
       res = await server.inject({
         method: 'post',
-        url: '/ride',
+        url: '/rides',
         payload: {name: "Ride du mercredi", date: "2021-11-11", route: `${route_id}`}
       });
       ride_id = res.result.id;
@@ -58,7 +68,7 @@ describe('Use rides', () => {
     it('responds with 200 when getting a ride', async () => {
       const res = await server.inject({
           method: 'get',
-          url: `/ride/${ride_id}`,
+          url: `/rides/${ride_id}`,
       });
       expect(res.statusCode).to.equal(200);
     });
