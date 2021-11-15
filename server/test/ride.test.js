@@ -7,17 +7,12 @@ const FormData = require('form-data');
 const { expect } = require('@hapi/code');
 const { afterEach, beforeEach, describe, it, before, after} = exports.lab = Lab.script();
 const { init } = require('../lib/server');
-const GetStream = require('get-stream');
-const mockCouch = require('mock-couch').createServer();
 
 describe('Use rides', () => {
   let server;
   let route_id, ride_id;
 
   before(async () => {
-    // mockCouch.listen(5984, function() {});
-    // mockCouch.addDB('gpxplanner', []);
-    // console.log('CouchDB started !');
     server = await init();
   });
 

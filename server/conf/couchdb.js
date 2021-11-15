@@ -11,16 +11,6 @@ const dev = {
  }
 };
 
-const local_test = {
- db: {
-   host: 'localhost',
-   port: 5984,
-   username: "admin",
-   password: "password",
-   connection_string: `http://admin:password@localhost:5984` 
- }
-};
-
 const test = {
   db: {
     host: 'localhost',
@@ -33,8 +23,7 @@ const test = {
 
 const config = {
  dev,
- test,
- local_test
+ test
 };
 
 module.exports = config[env];

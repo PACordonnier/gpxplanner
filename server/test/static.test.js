@@ -7,8 +7,6 @@ const FormData = require('form-data');
 const { expect } = require('@hapi/code');
 const { afterEach, beforeEach, describe, it, before, after} = exports.lab = Lab.script();
 const { init } = require('../lib/server');
-const GetStream = require('get-stream');
-const mockCouch = require('mock-couch').createServer();
 
 describe('Use static', () => {
   let server;
